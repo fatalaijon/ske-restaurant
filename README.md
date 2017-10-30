@@ -1,6 +1,6 @@
-## SKE Restaurant Project Proposal
+## Programming Project Proposal
 
-1. Title: **SKE Restaurant**
+1. Title: **Menu Ordering System with Graphical UI**
 
 2. Team: Fatalai Jon
 
