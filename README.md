@@ -14,6 +14,6 @@
     * JavaFX for graphical UI.
     * Cloud document database for orders (maybe).
 
-5. Vision: a simple ordering system that is easy to use.  The UI should make it clear to customer what he can do at each step, and be familiar (look similar to other apps).   This work serves as a prototype for me to learn how to design and implement a menu ordering app for a small restaurant.
+5. Vision: a simple ordering system that is easy to use.  The UI should make it clear to customer what he can do at each step, and be familiar (look similar to other apps most people use).   This work serves as a prototype for me to learn how to design and implement a real menu ordering app for a small restaurant.
     * Mockup to be added. 
 
