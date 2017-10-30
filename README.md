@@ -4,11 +4,14 @@
 
 2. Team: Fatalai Jon
 
-3. A menu ordering system for restaurant, including graphical UI.
+3. A menu ordering system for a restaurant, including a graphical UI and order tracking.
 
-4. The application lets a restaurant customer (or anyone) choose items to order from a graphical menu of choices, divided into categories.  Categories may be, for example, main dishes, side order, beverages, and dessert.  It is intended to show only a limited selection of food items.  
+4. The application lets a restaurant customer (or anyone) choose items to order from a graphical menu of choices, divided into categories, and place an order.  Categories may be, for example, main dishes, side order, beverages, and dessert.  It is intended to show only a limited selection of food items.  Main features and course knowledge used are:
+    * Object-oriented. Uses objects for instances of everything.
+    * Uses collections (List and Map) for menu.
+    * JavaFX for graphical UI.
+    * Cloud document database for orders (maybe).
 
-    The application involves use of objects, collections, graphical UI using JavaFX (if we can learn it well enough), and file I/O.  It is only the end-customer interface and doesn't include interface for sending orders to cook, accounting, or payments.
-
-5. Mockup to be added. 
+5. Vision: a simple ordering system that is easy to use.  The UI should make it clear to customer what he can do at each step, and be familiar (look similar to other apps).   This work serves as a prototype for me to learn how to design and implement a menu ordering app for a small restaurant.
+    * Mockup to be added. 
 

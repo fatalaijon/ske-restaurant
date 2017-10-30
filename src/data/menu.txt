@@ -1,0 +1,11 @@
+# the menu items one per line, with price
+Pad Thai; 30.0
+Cheese Pizza, large; 250.0
+Vegetarian Pizza, medium; 120.0
+Fried tofu; 18.0
+Mixed vegetables; 25.0
+Ice Tea; 20.0
+Khao Lam; 15.0
+Coke, small; 12.0
+Coke, medium; 20.0
+Coke, large; 25.0

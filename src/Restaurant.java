@@ -1,4 +1,3 @@
-package homework1;
 
 import java.util.Scanner;
 
@@ -12,17 +11,23 @@ import java.util.Scanner;
  */
 public class Restaurant {
 	/** Names of items on the menu. */
-	static final String[] items = { "Pizza", "Chicken", "Salad", "Ice Tea", "Drinking Water" };
+	String[] items;
 	/** Prices of the items, in same order as item names. */
-	static final int[] prices = { 250, 90, 30, 25, 12 };
+	double[] prices;
 	/** Parse input from console. */
 	static final Scanner console = new Scanner(System.in);
+
+	public Restaurant() {
+		RestaurantManager rm = RestaurantManager.getInstance();
+		items = rm.getMenuItems();
+		prices = rm.getPrices();
+	}
 	
 	/** Customer's order is the quantity of each item.  Initially the quantities are 0. */
 	
-	public static void printMenu() {
+	public void printMenu() {
 		// format used for printf of menu
-		String format = "%2d) %-20.20s %,5d%n";
+		String format = "%2d) %-20.20s %,6.2f%n";
 		for(int k=0; k<items.length; k++) {
 			System.out.printf(format, k+1, items[k], prices[k]);
 		}
@@ -33,17 +38,18 @@ public class Restaurant {
 		System.out.printf(choiceformat, "0", "Quit");
 	}
 	
-	public static String getChoice() {
+	public String getChoice() {
 		System.out.print("Enter choice: ");
 		return console.next();
 	}
 	
-	public static void quit() {
+	public void quit() {
 		System.out.println("Goodbye");
 		System.exit(0);
 	}
 	
-	public static void main(String[] args) {
+	/** Accept customer order in a loop. */
+	private void consoleUI( ) {
 		// create an array for customer's order.
 		int[] order = new int[items.length];
 		// initial quantity of each item is zero
@@ -78,21 +84,28 @@ public class Restaurant {
 	}
 
 	/** Show contents of customer's order. */
-	private static void showOrder(int[] order) {
-		int total = 0;
+	private void showOrder(int[] order) {
+		double total = 0;
 		boolean hasItems = false;
-		System.out.printf("Item# %-20.20s %4s2  %5s%n","Description", "Qnty", "Price");
+		System.out.printf("Item# %-20.20s %4s   %5s%n","Description", "Qnty", "Price");
 		for(int k=0; k<order.length; k++) {
 			if (order[k] != 0) {
-				int itemPrice = order[k]*prices[k]; 
+				double itemPrice = order[k]*prices[k]; 
 				hasItems = true;
-				System.out.printf("%3d   %-20.20s  %3d  %,5d%n", k+1, items[k], order[k], itemPrice);
+				System.out.printf("%3d   %-20.20s  %3d  %,7.2f%n", k+1, items[k], order[k], itemPrice);
 				total += itemPrice;
 			}
 		}
-		if (hasItems)
-			System.out.printf("      %-20.20s    %,8d%n", "Total Price", total);
+		if (hasItems) {
+			System.out.printf("      %-20.20s       %,7.2f%n", "Total Price", total);
+			System.out.println();
+		}
 		else
 			System.out.println("No items in order");
+	}
+
+	public static void main(String[] args) {
+		Restaurant restaurant = new Restaurant();
+		restaurant.consoleUI();
 	}
 }
