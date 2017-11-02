@@ -2,44 +2,62 @@
 import java.util.Scanner;
 
 /**
- * Homework 1: a console based interface for placing an order
- * at a restaurant.  Students don't know objects yet, so don't
- * use objects.
+ * A console based interface for placing an order
+ * at a restaurant.
  * 
  * @author Fatalai Jon
  *
  */
-public class Restaurant {
+public class RestaurantUI {
 	/** Names of items on the menu. */
-	String[] items;
+	private String[] items = {};
 	/** Prices of the items, in same order as item names. */
-	double[] prices;
+	private double[] prices = {};
 	/** Parse input from console. */
 	static final Scanner console = new Scanner(System.in);
+	/** The RestaurantManager, for getting menu info and submitting order. */
+	private final RestaurantManager rm;
 
-	public Restaurant() {
-		RestaurantManager rm = RestaurantManager.getInstance();
-		items = rm.getMenuItems();
-		prices = rm.getPrices();
+	// **Dependency Injection**
+	// RestaurantUI depends on RestaurantManager.
+	// Instead of creating a new RestaurantManager here, 
+	// we let some other object "give" us a reference to
+	// the RestaurantManager.
+	// This is called "Dependency Injection" - you inject (set)
+	// a reference to a dependency.
+	
+	/**
+	 * Initialize (but don't start) the UI.
+	 * @param rm a reference to the RestaurantManager.
+	 */
+	public RestaurantUI(RestaurantManager rm) {
+		this.rm = rm;
+		// items and prices initialized in consoleUI method.
 	}
 	
 	/** Customer's order is the quantity of each item.  Initially the quantities are 0. */
 	
+	/** Display the menu. */
 	public void printMenu() {
 		// format used for printf of menu
-		String format = "%2d) %-20.20s %,6.2f%n";
+		String format = "%2d) %-24.24s %,6.2f%n";
 		for(int k=0; k<items.length; k++) {
 			System.out.printf(format, k+1, items[k], prices[k]);
 		}
+	}
+	
+	/** Display other commands. */
+	public void printCommands() {
 		// special items
 		String choiceformat = "%2.2s) %s%n";
+		System.out.printf(choiceformat, "m", "Show menu");
 		System.out.printf(choiceformat, "s", "Show order");
-		System.out.printf(choiceformat, "c", "Checkout and quit");
+		System.out.printf(choiceformat, "c", "Checkout and Submit Order");
 		System.out.printf(choiceformat, "0", "Quit");
 	}
 	
 	public String getChoice() {
-		System.out.print("Enter choice: ");
+		System.out.print("Enter choice (? for help): ");
 		return console.next();
 	}
 	
@@ -49,21 +67,30 @@ public class Restaurant {
 	}
 	
 	/** Accept customer order in a loop. */
-	private void consoleUI( ) {
+	public void consoleUI( ) {
+		// Get the menu and price data. Do it here to make sure 
+		// we get up-to-date values.
+		items = rm.getMenuItems();
+		prices = rm.getPrices();
 		// create an array for customer's order.
 		int[] order = new int[items.length];
 		// initial quantity of each item is zero
 		java.util.Arrays.fill(order, 0);
 		
 		while(true) {
-			printMenu();
 			String choice = getChoice();
 			switch(choice) {
+			case "?":
+				printCommands();
+				break;
+			case "m":
+				printMenu();
+				break;
 			case "s":
-				showOrder(order);
+				displayOrder(order);
 				break;
 			case "c":
-				showOrder(order);
+				displayOrder(order);
 				// continue to quit...
 			case "0":
 				quit();
@@ -84,28 +111,24 @@ public class Restaurant {
 	}
 
 	/** Show contents of customer's order. */
-	private void showOrder(int[] order) {
+	private void displayOrder(int[] order) {
 		double total = 0;
 		boolean hasItems = false;
-		System.out.printf("Item# %-20.20s %4s   %5s%n","Description", "Qnty", "Price");
+		System.out.printf("Item# %-24.24s %4s   %5s%n","Description", "Qnty", "Price");
 		for(int k=0; k<order.length; k++) {
 			if (order[k] != 0) {
 				double itemPrice = order[k]*prices[k]; 
 				hasItems = true;
-				System.out.printf("%3d   %-20.20s  %3d  %,7.2f%n", k+1, items[k], order[k], itemPrice);
+				System.out.printf("%3d   %-24.24s  %3d  %,7.2f%n", k+1, items[k], order[k], itemPrice);
 				total += itemPrice;
 			}
 		}
 		if (hasItems) {
-			System.out.printf("      %-20.20s       %,7.2f%n", "Total Price", total);
+			System.out.printf("      %-24.24s       %,7.2f%n", "Total Price", total);
 			System.out.println();
 		}
 		else
 			System.out.println("No items in order");
 	}
 
-	public static void main(String[] args) {
-		Restaurant restaurant = new Restaurant();
-		restaurant.consoleUI();
-	}
 }
