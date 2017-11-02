@@ -73,9 +73,7 @@ public class RestaurantUI {
 		items = rm.getMenuItems();
 		prices = rm.getPrices();
 		// create an array for customer's order.
-		int[] order = new int[items.length];
-		// initial quantity of each item is zero
-		java.util.Arrays.fill(order, 0);
+		Order order = new Order(items, prices);
 		
 		while(true) {
 			String choice = getChoice();
@@ -100,8 +98,15 @@ public class RestaurantUI {
 				int itemNumber = 0;
 				try {
 					itemNumber = Integer.parseInt(choice);
-					if (itemNumber >= 0 && itemNumber < items.length)
-						order[itemNumber-1] += 1;
+					if (itemNumber >= 0 && itemNumber < items.length) {
+						
+						if (order.addItem(itemNumber, 1)) {
+							System.out.printf("Added %s.  Total quantity: %d\n", items[itemNumber], order.getQuantityOfItem(itemNumber));
+						}
+						else {
+							System.out.printf("Failed to add item %d (%s)\n", itemNumber, items[itemNumber]);
+						}
+					}
 					else System.out.println("Invalid choice "+choice);
 				} catch(NumberFormatException nfe) {
 					System.out.println("Invalid choice "+choice);
@@ -111,19 +116,19 @@ public class RestaurantUI {
 	}
 
 	/** Show contents of customer's order. */
-	private void displayOrder(int[] order) {
-		double total = 0;
+	private void displayOrder(Order order) {
 		boolean hasItems = false;
 		System.out.printf("Item# %-24.24s %4s   %5s%n","Description", "Qnty", "Price");
-		for(int k=0; k<order.length; k++) {
-			if (order[k] != 0) {
-				double itemPrice = order[k]*prices[k]; 
+		for(int k=0; k<items.length; k++) {
+			int qnty = order.getQuantityOfItem(k);
+			if (qnty != 0) {
+				double itemPrice = qnty*prices[k]; 
 				hasItems = true;
-				System.out.printf("%3d   %-24.24s  %3d  %,7.2f%n", k+1, items[k], order[k], itemPrice);
-				total += itemPrice;
+				System.out.printf("%3d   %-24.24s  %3d  %,7.2f%n", k+1, items[k], qnty, itemPrice);
 			}
 		}
 		if (hasItems) {
+			double total = order.getTotal();
 			System.out.printf("      %-24.24s       %,7.2f%n", "Total Price", total);
 			System.out.println();
 		}
