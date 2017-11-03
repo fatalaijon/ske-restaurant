@@ -10,9 +10,9 @@ import java.util.Scanner;
  */
 public class RestaurantUI {
 	/** Names of items on the menu. */
-	private String[] items = {};
+	private String[] items = null;
 	/** Prices of the items, in same order as item names. */
-	private double[] prices = {};
+	private double[] prices = null;
 	/** Parse input from console. */
 	static final Scanner console = new Scanner(System.in);
 	/** The RestaurantManager, for getting menu info and submitting order. */
@@ -35,48 +35,60 @@ public class RestaurantUI {
 		// items and prices initialized in consoleUI method.
 	}
 	
-	/** Customer's order is the quantity of each item.  Initially the quantities are 0. */
+	/**
+	 * Accept orders at console, in a loop.
+	 */
+	public void consoleUI() {
+		while(true) {
+			Order order = acceptOrder();	
+			if (order == null || order.isEmpty()) continue;
+			// pay and submit
+			acceptPayment(order);
+			submit(order);
+			printReceipt(order);
+		}
+		
+	}
 	
 	/** Display the menu. */
 	public void printMenu() {
+		if (items == null) initMenu();
 		// format used for printf of menu
-		String format = "%2d) %-24.24s %,6.2f%n";
-		for(int k=0; k<items.length; k++) {
-			System.out.printf(format, k+1, items[k], prices[k]);
+		String format = "[%2d] %-24.24s %,6.2f%n";
+		// Item 0 is not used so that item numbers start at 1.
+		for(int k=1; k<items.length; k++) {
+			System.out.printf(format, k, items[k], prices[k]);
 		}
+		// add a blank line for readability
+		System.out.println();
 	}
 	
 	/** Display other commands. */
 	public void printCommands() {
 		// special items
-		String choiceformat = "%2.2s) %s%n";
-		System.out.printf(choiceformat, "m", "Show menu");
-		System.out.printf(choiceformat, "s", "Show order");
+		String choiceformat = "%-6.6s %s%n";
+		System.out.printf(choiceformat, "1-"+items.length, "Add item# to order");
+		System.out.printf(choiceformat, "m", "Display menu");
+		System.out.printf(choiceformat, "s", "Show contents of order");
 		System.out.printf(choiceformat, "c", "Checkout and Submit Order");
+		System.out.printf(choiceformat, "x", "Cancel order");
 		System.out.printf(choiceformat, "0", "Quit");
 	}
 	
-	public String getChoice() {
-		System.out.print("Enter choice (? for help): ");
-		return console.next();
-	}
 	
-	public void quit() {
-		System.out.println("Goodbye");
-		System.exit(0);
-	}
 	
-	/** Accept customer order in a loop. */
-	public void consoleUI( ) {
-		// Get the menu and price data. Do it here to make sure 
-		// we get up-to-date values.
-		items = rm.getMenuItems();
-		prices = rm.getPrices();
+	/** 
+	 * Accept customer order in a loop. 
+	 * @return a completed order or null if order is cancelled.
+	 */
+	protected Order acceptOrder( ) {
+		// make sure we have the menu data
+		if (items == null) initMenu();
 		// create an array for customer's order.
 		Order order = new Order(items, prices);
 		
 		while(true) {
-			String choice = getChoice();
+			String choice = getReply("Enter item# to order or command (? for help): ");
 			switch(choice) {
 			case "?":
 				printCommands();
@@ -87,11 +99,17 @@ public class RestaurantUI {
 			case "s":
 				displayOrder(order);
 				break;
+			case "x":
+				if ( cancelOrder(order) ) {
+					System.out.println("Order cancelled.");
+					return null;
+				}
+				break;
 			case "c":
 				displayOrder(order);
-				// continue to quit...
+				break;
 			case "0":
-				quit();
+//				quit();
 				break;
 			default:
 				// anything else should be an item number
@@ -135,5 +153,52 @@ public class RestaurantUI {
 		else
 			System.out.println("No items in order");
 	}
-
+	
+	/**
+	 * Accept payment for an order.
+	 * @param order a customer order to get payment for
+	 * @precondition the order is not null
+	 */
+	protected void acceptPayment(Order order) {
+		System.out.printf("Total amount %,.2f\n", order.getTotal());
+		
+		
+	}
+	
+	protected void submit(Order order) {
+		rm.recordOrder( order );
+	}
+	/**
+	 * Confirm action to cancel an order,
+	 * if order is not empty.
+	 * @param order the order to cancel
+	 * @return true if OK to cancel this order.
+	 */
+	private boolean cancelOrder(Order order) {
+		if (order == null || order.isEmpty()) return true;
+		int itemCount = 0;
+		for(int id : order.getItems()) itemCount += order.getQuantityOfItem(id);
+		String confirm = getReply(String.format("Order contains %d items.  Really cancel (y/n)? ", itemCount) );
+		if (confirm.equalsIgnoreCase("yes") || confirm.equalsIgnoreCase("y")) return true;
+		return false;
+	}
+	
+	/** Initialize the menu data, using RestaurantManager. */
+	private void initMenu() {
+		items = rm.getMenuItems();
+		prices = rm.getPrices();
+	}
+	
+	private String getReply(String prompt) {
+		System.out.print(prompt);
+		return console.nextLine().trim();
+	}
+	
+	public void printReceipt(Order order) {
+		System.out.println(rm.getRestaurantName());
+		System.out.printf("Order No:   %d\n", order.getOrderNumber());
+		System.out.printf("Date/Time:  %tc\n", order.getTimeStamp());
+		System.out.println();
+		displayOrder(order);
+	}
 }

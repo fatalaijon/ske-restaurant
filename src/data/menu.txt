@@ -7,7 +7,7 @@ Fried tofu; 18.0
 Mixed vegetables; 25.0
 Ice Tea; 20.0
 Khao Lam; 15.0
-American Coffee, hot; 20.0
-Espresso, hot; 20.0
+Hot Brewed Coffee; 20.0
+Espresso Coffee; 20.0
 Ice Coffee; 25.0
-Coke (totally bad); 1.0
+Coke (not recommended); 1.0

@@ -1,7 +1,9 @@
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * RestaurantManager provides behavior that a restaurant
@@ -13,10 +15,14 @@ import java.util.Scanner;
  */
 
 public class RestaurantManager {
+	/** Name of the restaurant displayed in UI and on receipts. */
+	static final String restaurantName = "SKE Objects Restaurant";
     //TODO put this in a configuration file
 	static final String MENU_FILE = "data/menu.txt";
     /** Singleton instance of this class. */
     private static RestaurantManager instance = null;
+    // Order numbers
+    protected AtomicLong nextOrderNumber;
 	// Not static anymore! 
 	private String[] menuItems;
 	private double[] prices;
@@ -27,6 +33,7 @@ public class RestaurantManager {
      */
     protected RestaurantManager() {
         loadMenu();
+        nextOrderNumber = new AtomicLong(1L);
     }
 
     /**
@@ -87,6 +94,9 @@ public class RestaurantManager {
 		}
 		// close resource when done to free resources
 		scanner.close();
+		// Add a dummy items to start of lists so that the indices of real menu items start at 1, not 0.
+		menuList.add(0, "No item");
+		priceList.add(0, 0.0);
 		menuItems = new String[menuList.size()];
 		prices = new double[priceList.size()];
 		menuList.toArray(menuItems);
@@ -119,5 +129,30 @@ public class RestaurantManager {
 		for(int k=0; k<menu.length; k++) {
 			System.out.printf("%-24.24s  %,7.2f\n", menu[k], prices[k]);
 		}
+	}
+	
+	/**
+	 * Record an order.  Set the order number and timestamp.
+	 * @param order
+	 */
+	public void recordOrder(Order order) {
+		// assign order number
+		order.setOrderNumber( getNextOrderNumber() );
+		order.setTimeStamp( LocalDateTime.now() );
+	}
+	
+	/**
+	 * Return a unique order number.
+	 * Uses AtomicLong to avoid possible inconsistencies
+	 * if using threads.
+	 * @return next available order number
+	 */
+	private long getNextOrderNumber() {
+		return nextOrderNumber.getAndIncrement();
+		
+	}
+
+	public static String getRestaurantName() {
+		return restaurantName;
 	}
 }
