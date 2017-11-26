@@ -1,3 +1,5 @@
+import restaurant.RestaurantManager;
+
 /**
  * The main class for running the SKE Restaurant application.
  * This call just initializes other objects and invokes a

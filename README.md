@@ -15,5 +15,12 @@
     * Cloud document database for orders (maybe).
 
 5. Vision: a simple ordering system that is easy to use.  The UI should make it clear to customer what he can do at each step, and be familiar (look similar to other apps most people use).   This work serves as a prototype for me to learn how to design and implement a real menu ordering app for a small restaurant.
-    * Mockup to be added. 
+
+## Technology and Implementation
+
+[Singleton Restaurant Manager](Singleton.md) - the application ensures that
+there is only **one** RestaurantManager object, but we can change the actual
+RestaurantManager (using subclasses) without changing any other part of the code.
+
+
 

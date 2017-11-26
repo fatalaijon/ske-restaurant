@@ -1,3 +1,4 @@
+package order;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
@@ -113,19 +114,19 @@ public class Order {
 		return Arrays.copyOf(itemIds, count); 
 	}
 
-	protected long getOrderNumber() {
+	public long getOrderNumber() {
 		return orderNumber;
 	}
 
-	protected void setOrderNumber(long orderNumber) {
+	public void setOrderNumber(long orderNumber) {
 		this.orderNumber = orderNumber;
 	}
 	
-	protected void setTimeStamp( LocalDateTime time ) {
+	public void setTimeStamp( LocalDateTime time ) {
 		this.timestamp = time;
 	}
 	
-	protected LocalDateTime getTimeStamp() {
+	public LocalDateTime getTimeStamp() {
 		return timestamp;
 	}
 }

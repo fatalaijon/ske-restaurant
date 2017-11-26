@@ -1,6 +1,9 @@
 
 import java.util.Scanner;
 
+import order.Order;
+import restaurant.RestaurantManager;
+
 /**
  * A console based interface for placing an order
  * at a restaurant.
@@ -47,7 +50,6 @@ public class RestaurantUI {
 			submit(order);
 			printReceipt(order);
 		}
-		
 	}
 	
 	/** Display the menu. */
@@ -161,8 +163,6 @@ public class RestaurantUI {
 	 */
 	protected void acceptPayment(Order order) {
 		System.out.printf("Total amount %,.2f\n", order.getTotal());
-		
-		
 	}
 	
 	protected void submit(Order order) {
