@@ -1,12 +1,12 @@
 ## Singleton for RestaurantManager
 
-**Singleton** is a design pattern that lets you ensure an application
-only has **one** instance of a particular class.  This is used in places
+**Singleton** is a design pattern that lets you ensure that an application
+only has **one** instance of a class.  This is used in places
 where there should only be one object and the object is accessible by
-whatever objects need it.
+any objects need it.
 
-Examples: a singleton Bank in a banking app, a singleton Store (that
-records sales) in a retail app.
+Examples: a Singleton Bank in a banking app, a Singleton database connection
+for connecting to a database.
 
 ### How to write a Singleton
 

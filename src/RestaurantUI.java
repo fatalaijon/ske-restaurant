@@ -1,4 +1,3 @@
-
 import java.util.Scanner;
 
 import order.Order;
@@ -9,7 +8,6 @@ import restaurant.RestaurantManager;
  * at a restaurant.
  * 
  * @author Fatalai Jon
- *
  */
 public class RestaurantUI {
 	/** Names of items on the menu. */

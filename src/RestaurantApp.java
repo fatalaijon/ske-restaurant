@@ -6,7 +6,6 @@ import restaurant.RestaurantManager;
  * method to start UI.
  * 
  * @author Fatalai Jon
- *
  */
 public class RestaurantApp {
 
