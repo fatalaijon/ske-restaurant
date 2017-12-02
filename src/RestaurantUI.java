@@ -47,7 +47,7 @@ public class RestaurantUI {
 			if (order == null || order.isEmpty()) continue;
 			// pay and submit
 			acceptPayment(order);
-			submit(order);
+			submitOrder(order);
 			printReceipt(order);
 		}
 	}
@@ -67,14 +67,14 @@ public class RestaurantUI {
 	
 	/** Display other commands. */
 	public void printCommands() {
-		// special items
+		int itemcount = items.length - 1; // don't use element [0]
 		String choiceformat = "%-6.6s %s%n";
-		System.out.printf(choiceformat, "1-"+items.length, "Add item# to order");
+		System.out.printf(choiceformat, "1-"+itemcount, "Add item# to order");
 		System.out.printf(choiceformat, "m", "Display menu");
-		System.out.printf(choiceformat, "s", "Show contents of order");
-		System.out.printf(choiceformat, "c", "Checkout and Submit Order");
+		System.out.printf(choiceformat, "p", "Print contents of order");
+		System.out.printf(choiceformat, "s", "checkout and Submit Order");
 		System.out.printf(choiceformat, "x", "Cancel order");
-		System.out.printf(choiceformat, "0", "Quit");
+		System.out.printf(choiceformat, "Q", "Quit (capital 'Q')");
 	}
 	
 	
@@ -96,23 +96,27 @@ public class RestaurantUI {
 				printCommands();
 				break;
 			case "m":
+			case "M":
 				printMenu();
 				break;
-			case "s":
+			case "p":
+			case "P":
 				displayOrder(order);
 				break;
 			case "x":
+			case "X":
 				if ( cancelOrder(order) ) {
 					System.out.println("Order cancelled.");
 					return null;
 				}
 				break;
-			case "c":
-				displayOrder(order);
-				break;
-			case "0":
-//				quit();
-				break;
+			case "s":
+			case "S":
+				// return the order.  The caller will submit it.
+				return order;
+			case "Q":
+				quit();
+				return null;
 			default:
 				// anything else should be an item number
 				int itemNumber = 0;
@@ -144,7 +148,7 @@ public class RestaurantUI {
 			if (qnty != 0) {
 				double itemPrice = qnty*prices[k]; 
 				hasItems = true;
-				System.out.printf("%3d   %-24.24s  %3d  %,7.2f%n", k+1, items[k], qnty, itemPrice);
+				System.out.printf("%3d   %-24.24s  %3d  %,7.2f%n", k, items[k], qnty, itemPrice);
 			}
 		}
 		if (hasItems) {
@@ -165,8 +169,11 @@ public class RestaurantUI {
 		System.out.printf("Total amount %,.2f\n", order.getTotal());
 	}
 	
-	protected void submit(Order order) {
+	protected void submitOrder(Order order) {
 		rm.recordOrder( order );
+		System.out.println("Order Submitted.  Your order number is "+order.getOrderNumber());
+		System.out.println("Thank you for your order.\n");
+		
 	}
 	/**
 	 * Confirm action to cancel an order,
@@ -197,8 +204,13 @@ public class RestaurantUI {
 	public void printReceipt(Order order) {
 		System.out.println(rm.getRestaurantName());
 		System.out.printf("Order No:   %d\n", order.getOrderNumber());
-		System.out.printf("Date/Time:  %tc\n", order.getTimeStamp());
+		System.out.printf("Date/Time:  %tT\n", order.getTimeStamp());
 		System.out.println();
 		displayOrder(order);
+	}
+	
+	public void quit() {
+		if (rm != null) rm.shutdown();
+		System.exit(0);
 	}
 }
